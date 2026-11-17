@@ -1,6 +1,6 @@
 import time
 
-from python_base.utils.timing import segment_timer
+from mps_flux_3_fp8.utils.timing import segment_timer
 
 
 def test_segment_timer():

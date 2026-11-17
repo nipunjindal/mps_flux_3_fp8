@@ -3,22 +3,30 @@ requires = ["uv_build>=0.8.2,<0.9.0"]
 build-backend = "uv_build"
 
 [project]
-name = "python_base"
+name = "mps_flux_3_fp8"
 version = "0.0.1"
-description = "Template Python project pre-configured for uv dependency management."
-requires-python = ">=3.10"
+description = "FLUX 3 Image Klein with diffusers on Apple Silicon (MPS), bf16 baseline then FP8 on torch 2.15."
+requires-python = ">=3.11"
 readme = "README.md"
 keywords = ["template", "uv", "python"]
 authors = [{name = "Nipun Jindal", email = "njindal@adobe.com"}]
 # Runtime dependencies
 dependencies = [
-  "torch",
-  "torchvision",
+  "accelerate>=1.16.0",
+  "diffusers==0.43.0",
+  "huggingface-hub[hf_xet]",
   "matplotlib",
-  "numpy"
+  "numpy",
+  "pillow",
+  "safetensors",
+  "transformers>=5.23.0"
 ]
 
 [project.optional-dependencies]
+# Phase 1: bf16 baseline on the previous torch release
+torch214 = ["torch==2.14.1", "torchvision"]
+# Phase 2: torch 2.15 adds float8_e4m3fn + F.scaled_mm on MPS
+torch215 = ["torch==2.15.0", "torchvision"]
 # Development-only utilities
 dev = [
   "pytest",
@@ -63,4 +71,7 @@ exclude = [
   "venv"
 ]
 # Assume Python 3.10
-target-version = "py310"
+target-version = "py311"
+
+[tool.uv]
+conflicts = [[{extra = "torch214"}, {extra = "torch215"}]]

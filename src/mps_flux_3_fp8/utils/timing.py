@@ -2,7 +2,7 @@ import time
 from collections.abc import Generator
 from contextlib import contextmanager
 
-from python_base.utils.log import logger
+from mps_flux_3_fp8.utils.log import logger
 
 
 @contextmanager

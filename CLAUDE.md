@@ -1,29 +1,33 @@
-# Python Base - Template Project
+# mps_flux_3_fp8
 
-Starter Python project pre-configured with uv, ruff, ty, and pre-commit.
+FLUX 3 Image Klein with diffusers 0.43 on Apple Silicon (MPS): bf16 on torch 2.14, FP8 on torch 2.15. Built on a uv/ruff/ty/pre-commit template.
 
 ## Quick Reference
 
 ```bash
-make install        # Create venv + install deps (including dev)
+make install        # Create .venv-torch215 + install deps (including dev)
+make kernels        # Build .venv-torch214 + .venv-torch215 and register Jupyter kernels
+make bench          # Synthetic FLUX 3 transformer step benchmark, bf16 vs FP8, both torch versions
 make test           # Run pytest
 make lint           # Format + lint + type-check (ruff, shfmt, toml-sort, ty)
 make type-check     # ty check only
 make pre-commit-run # Run all pre-commit hooks
-make clean          # Remove .venv and caches
+make clean          # Remove both venvs and caches
 make rename NEW=x   # Rename package from python_base to x
 ```
 
 ## Project Layout
 
-- `src/python_base/` — Main package (use `make rename` to change)
+- `src/mps_flux_3_fp8/` — Main package: `flux3.py` (pipeline load/generate/metrics), `fp8.py` (fp8r quantization + MPS matmul backends)
+- `notebooks/` — `01_flux3_bf16_mps.ipynb` (torch 2.14 kernel), `02_flux3_fp8_mps.ipynb` (torch 2.15 kernel); outputs go to `outputs/` (gitignored)
 - `tests/` — Pytest test files
-- `scripts/` — Standalone scripts
+- `scripts/` — Standalone scripts (`bench_transformer.py`, `sweep_fp8_gemm.py`)
 
 ## Tooling
 
 - **Package manager**: uv (not pip/poetry)
-- **Linter/formatter**: ruff (line-length 120, target py310)
+- **Linter/formatter**: ruff (line-length 120, target py311)
+- **Runtime**: diffusers 0.43.0, transformers >= 5.23, torch 2.14.1 / 2.15.0 as mutually exclusive extras (`torch214`, `torch215`)
 - **Type checker**: ty
 - **Tests**: pytest (testpaths=tests, pythonpath=src)
 - **Pre-commit**: ruff-format, ruff lint, shfmt, toml-sort
@@ -35,8 +39,8 @@ Agent definitions live in `.claude/agents/` (orchestrator, implementer, reviewer
 ## Conventions
 
 - Run `make lint` before committing — pre-commit hooks enforce this
-- All source goes under `src/python_base/`; tests mirror the source structure in `tests/`
-- Python >=3.10 required
+- All source goes under `src/mps_flux_3_fp8/`; tests mirror the source structure in `tests/`
+- Python >=3.11 required
 - Keep this file updated as the project evolves — new deps, conventions, or structural changes should be reflected here
 
 ## Coding Standards

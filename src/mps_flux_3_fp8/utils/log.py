@@ -29,7 +29,7 @@ class ColoredFormatter(logging.Formatter):
         return original_format
 
 
-def configure_logger(name: str = "python_base", level: int = logging.DEBUG) -> logging.Logger:
+def configure_logger(name: str = "mps_flux_3_fp8", level: int = logging.DEBUG) -> logging.Logger:
     """Configure and return logger with specified name and level."""
     logger = logging.getLogger(name)
     logger.setLevel(level)
